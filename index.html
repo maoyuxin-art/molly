@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POP MART x Molly - 发现你的专属潮玩</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #FF6B9D;
+            --pink-light: #FFB8D0;
+            --pink-pale: #FFE4ED;
+            --cream: #FFF8F0;
+            --yellow: #FFD93D;
+            --mint: #6BCB77;
+            --sky: #4D96FF;
+            --purple: #9B59B6;
+            --dark: #2D2D2D;
+            --gray: #888;
+            --light-gray: #F5F5F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ===== 加载动画 ===== */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--pink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-molly {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            animation: bounce 1s ease infinite;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .loader-text {
+            margin-top: 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 4px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ===== 浮动元素动画 ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(-3deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,107,157,0.3); }
+            50% { box-shadow: 0 0 40px rgba(255,107,157,0.6); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        @keyframes reveal-up {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scale-in {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slide-left {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== 导航 ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--pink);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            font-size: 13px;
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--pink);
+        }
+
+        /* ===== 英雄区 ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 24px 60px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--pink-pale) 0%, var(--cream) 100%);
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+        }
+
+        .hero-blob-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--pink-light);
+            top: -50px;
+            right: -80px;
+        }
+
+        .hero-blob-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--yellow);
+            bottom: 100px;
+            left: -60px;
+            opacity: 0.3;
+        }
+
+        .hero-tag {
+            background: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--pink);
+            box-shadow: 0 4px 15px rgba(255,107,157,0.15);
+            margin-bottom: 24px;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            z-index: 1;
+        }
+
+        .hero-title span {
+            color: var(--pink);
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--gray);
+            text-align: center;
+            margin-bottom: 40px;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .hero-molly {
+            width: 280px;
+            max-width: 80vw;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            z-index: 1;
+            animation: float 4s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        .hero-scroll {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        .hero-scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--pink), transparent);
+            animation: scroll-line 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scroll-line {
+            0% { transform: scaleY(0); transform-origin: top; }
+            50% { transform: scaleY(1); transform-origin: top; }
+            50.1% { transform-origin: bottom; }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        /* ===== 品牌故事区 ===== */
+        .section {
+            padding: 80px 24px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--pink);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.7;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* ===== Molly形象特色 ===== */
+        .features {
+            background: white;
+        }
+
+        .feature-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--cream);
+            border-radius: 20px;
+            padding: 28px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:active {
+            transform: scale(0.98);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .feature-icon.pink { background: var(--pink-pale); }
+        .feature-icon.yellow { background: #FFF8E1; }
+        .feature-icon.mint { background: #E8F5E9; }
+
+        .feature-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-content p {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* ===== 盲盒区 ===== */
+        .blindbox {
+            background: linear-gradient(180deg, var(--cream) 0%, #FFF0F5 100%);
+            text-align: center;
+        }
+
+        .blindbox-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0;
+            perspective: 800px;
+        }
+
+        .blindbox-item {
+            width: 100px;
+            height: 130px;
+            background: linear-gradient(145deg, var(--pink), var(--pink-light));
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blindbox-item:nth-child(2) {
+            background: linear-gradient(145deg, var(--yellow), #FFE082);
+            box-shadow: 0 8px 25px rgba(255,217,61,0.3);
+        }
+
+        .blindbox-item:nth-child(3) {
+            background: linear-gradient(145deg, var(--mint), #81C784);
+            box-shadow: 0 8px 25px rgba(107,203,119,0.3);
+        }
+
+        .blindbox-item.shaking {
+            animation: shake 0.4s ease-in-out 3;
+        }
+
+        .blindbox-item.opened {
+            transform: rotateY(180deg);
+            background: white;
+        }
+
+        .blindbox-item .front,
+        .blindbox-item .back {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 16px;
+        }
+
+        .blindbox-item .back {
+            transform: rotateY(180deg);
+            background: white;
+            border: 2px solid var(--pink-pale);
+        }
+
+        .blindbox-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .blindbox-text {
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .blindbox-item:nth-child(2) .blindbox-text,
+        .blindbox-item:nth-child(3) .blindbox-text {
+            color: var(--dark);
+        }
+
+        .blindbox-revealed {
+            font-size: 50px;
+        }
+
+        .blindbox-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--pink);
+            margin-top: 4px;
+        }
+
+        .blindbox-hint {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 16px;
+        }
+
+        /* ===== 系列展示 ===== */
+        .series {
+            background: white;
+            overflow: hidden;
+        }
+
+        .series-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 0 24px 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .series-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .series-card {
+            flex: 0 0 220px;
+            background: var(--cream);
+            border-radius: 24px;
+            padding: 24px;
+            scroll-snap-align: start;
+            text-align: center;
+        }
+
+        .series-card-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--pink-pale), white);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            box-shadow: 0 8px 30px rgba(255,107,157,0.1);
+        }
+
+        .series-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .series-card p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .series-card .tag {
+            display: inline-block;
+            background: var(--pink);
+            color: white;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        /* ===== 品牌数据 ===== */
+        .stats {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--pink);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 400;
+        }
+
+        /* ===== CTA区 ===== */
+        .cta {
+            background: linear-gradient(180deg, var(--pink-pale) 0%, var(--pink) 100%);
+            text-align: center;
+            padding: 100px 24px;
+        }
+
+        .cta-emoji {
+            font-size: 80px;
+            margin-bottom: 24px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .cta-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .cta-desc {
+            font-size: 15px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: var(--pink);
+            font-size: 16px;
+            font-weight: 700;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .cta-arrow {
+            transition: transform 0.3s;
+        }
+
+        .cta-btn:hover .cta-arrow {
+            transform: translateX(4px);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            background: var(--dark);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--pink);
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-copy {
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+        }
+
+        /* ===== 装饰元素 ===== */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .deco-dots {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-image: radial-gradient(circle, var(--pink-light) 2px, transparent 2px);
+            background-size: 12px 12px;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 28px;
+            padding: 40px 32px;
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-btn {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== 响应式优化 ===== */
+        @media (max-width: 380px) {
+            .hero-title { font-size: 30px; }
+            .section-title { font-size: 24px; }
+            .blindbox-item { width: 85px; height: 110px; }
+            .cta-title { font-size: 26px; }
+        }
+
+        @media (min-width: 768px) {
+            .hero-title { font-size: 48px; }
+            .hero-molly { width: 350px; }
+            .feature-cards { max-width: 600px; }
+            .stats-grid { max-width: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 加载动画 -->
+    <div class="loader" id="loader">
+        <div class="loader-molly">🎨</div>
+        <div class="loader-text">POP MART</div>
+    </div>
+
+    <!-- 导航 -->
+    <nav class="nav">
+        <div class="nav-logo">POP MART</div>
+        <div class="nav-menu">
+            <a href="#story">品牌故事</a>
+            <a href="#features">Molly特色</a>
+            <a href="#blindbox">盲盒</a>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section class="hero">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        
+        <div class="hero-tag reveal">✨ 潮玩艺术收藏</div>
+        <h1 class="hero-title reveal reveal-delay-1">
+            遇见 <span>Molly</span><br>发现你的专属潮玩
+        </h1>
+        <p class="hero-subtitle reveal reveal-delay-2">
+            艺术家 Kenny Wong 创作的经典形象<br>
+            用独特的大眼与撅嘴，诠释潮流艺术
+        </p>
+        <img src="images/molly.jpg" alt="Molly 艺术家系列" class="hero-molly reveal reveal-delay-3" id="heroMolly">
+        
+        <div class="hero-scroll reveal reveal-delay-4">
+            <span>向下滑动探索</span>
+            <div class="hero-scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- 品牌故事 -->
+    <section class="section story" id="story">
+        <div class="deco-dots" style="top: 40px; right: 20px;"></div>
+        <div class="section-header reveal">
+            <div class="section-label">Brand Story</div>
+            <h2 class="section-title">关于 POP MART</h2>
+            <p class="section-desc">
+                POP MART 成立于 2010 年，是中国领先的潮流文化娱乐公司。
+                致力于搭建覆盖潮流玩具全产业链的综合运营平台，
+                让更多人享受潮流文化的乐趣。
+            </p>
+        </div>
+        <div class="feature-cards">
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon pink">🎨</div>
+                <div class="feature-content">
+                    <h3>艺术家原创</h3>
+                    <p>携手全球顶尖艺术家，将独特的创意与艺术理念融入每一款设计</p>
+                </div>
+            </div>
+            <div class="feature-card reveal reveal-delay-2">
+                <div class="feature-icon yellow">🎁</div>
+                <div class="feature-content">
+                    <h3>盲盒惊喜</h3>
+                    <p>神秘的盲盒机制，让每一次开箱都充满期待与惊喜</p>
+                </div>
+            </div>
+            <div class="feature-card reveal reveal-delay-3">
+                <div class="feature-icon mint">🌍</div>
+                <div class="feature-content">
+                    <h3>全球潮流</h3>
+                    <p>从中国走向世界的潮流文化符号，连接全球潮玩爱好者</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Molly 特色 -->
+    <section class="section features" id="features">
+        <div class="section-header reveal">
+            <div class="section-label">Molly Character</div>
+            <h2 class="section-title">Molly 的独特魅力</h2>
+            <p class="section-desc">
+                2006 年由香港艺术家 Kenny Wong 创作，
+                Molly 以标志性的湖绿色大眼睛和微微撅起的小嘴，
+                成为潮玩界最具辨识度的形象之一。
+            </p>
+        </div>
+        <div class="feature-cards">
+            <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-icon pink">👁️</div>
+                <div class="feature-content">
+                    <h3>湖绿色大眼睛</h3>
+                    <p>充满灵气与好奇的眼神，仿佛能看透你的内心世界</p>
+                </div>
+            </div>
+            <div class="feature-card reveal reveal-delay-2">
+                <div class="feature-icon yellow">👄</div>
+                <div class="feature-content">
+                    <h3>标志性撅嘴</h3>
+                    <p>倔强中带着可爱，成为 Molly 最具辨识度的表情符号</p>
+                </div>
+            </div>
+            <div class="feature-card reveal reveal-delay-3">
+                <div class="feature-icon mint">🎭</div>
+                <div class="feature-content">
+                    <h3>百变主题造型</h3>
+                    <p>从艺术画家到宇航员，每个系列都有独特的故事与灵魂</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 盲盒互动 -->
+    <section class="section blindbox" id="blindbox">
+        <div class="section-header reveal">
+            <div class="section-label">Blind Box</div>
+            <h2 class="section-title">开启你的盲盒惊喜</h2>
+            <p class="section-desc">
+                点击盲盒，体验开箱的刺激与乐趣<br>
+                看看今天会遇见哪只 Molly！
+            </p>
+        </div>
+        <div class="blindbox-container reveal reveal-delay-1">
+            <div class="blindbox-item" data-box="0">
+                <div class="front">
+                    <div class="blindbox-emoji">?</div>
+                    <div class="blindbox-text">Molly</div>
+                </div>
+            </div>
+            <div class="blindbox-item" data-box="1">
+                <div class="front">
+                    <div class="blindbox-emoji">?</div>
+                    <div class="blindbox-text">Molly</div>
+                </div>
+            </div>
+            <div class="blindbox-item" data-box="2">
+                <div class="front">
+                    <div class="blindbox-emoji">?</div>
+                    <div class="blindbox-text">Molly</div>
+                </div>
+            </div>
+        </div>
+        <p class="blindbox-hint reveal">👆 点击任意盲盒，揭晓惊喜</p>
+    </section>
+
+    <!-- 系列展示 -->
+    <section class="section series" id="series">
+        <div class="section-header reveal">
+            <div class="section-label">Collections</div>
+            <h2 class="section-title">经典系列</h2>
+            <p class="section-desc">左右滑动，探索 Molly 的经典主题系列</p>
+        </div>
+        <div class="series-scroll reveal reveal-delay-1">
+            <div class="series-card">
+                <div class="series-card-img">🎨</div>
+                <h3>艺术大亨</h3>
+                <p>化身艺术大师的 Molly</p>
+                <span class="tag">经典款</span>
+            </div>
+            <div class="series-card">
+                <div class="series-card-img">🚀</div>
+                <h3>太空系列</h3>
+                <p>探索宇宙的宇航员 Molly</p>
+                <span class="tag">热门款</span>
+            </div>
+            <div class="series-card">
+                <div class="series-card-img">🌸</div>
+                <h3>花童系列</h3>
+                <p>春日浪漫的花仙子 Molly</p>
+                <span class="tag">限量款</span>
+            </div>
+            <div class="series-card">
+                <div class="series-card-img">👑</div>
+                <h3>宫廷系列</h3>
+                <p>穿越古今的皇室 Molly</p>
+                <span class="tag">珍藏款</span>
+            </div>
+            <div class="series-card">
+                <div class="series-card-img">🎪</div>
+                <h3>马戏团系列</h3>
+                <p>欢乐奇幻的杂技 Molly</p>
+                <span class="tag">隐藏款</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品牌数据 -->
+    <section class="section stats">
+        <div class="section-header reveal">
+            <div class="section-label" style="color: var(--pink-light);">By The Numbers</div>
+            <h2 class="section-title" style="color: white;">POP MART 数据</h2>
+        </div>
+        <div class="stats-grid reveal reveal-delay-1">
+            <div class="stat-item">
+                <div class="stat-number" data-target="400">0</div>
+                <div class="stat-label">万+ 会员</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="100">0</div>
+                <div class="stat-label">+ 艺术家合作</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="350">0</div>
+                <div class="stat-label">+ 线下门店</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="80">0</div>
+                <div class="stat-label">+ 国家和地区</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-emoji reveal">🎁</div>
+        <h2 class="cta-title reveal reveal-delay-1">
+            准备好开始<br>你的收藏之旅了吗？
+        </h2>
+        <p class="cta-desc reveal reveal-delay-2">
+            加入 POP MART 会员，获取限量发售信息<br>
+            与全球潮玩爱好者一起分享收藏乐趣
+        </p>
+        <button class="cta-btn reveal reveal-delay-3" onclick="showModal()">
+            立即探索
+            <span class="cta-arrow">→</span>
+        </button>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-logo">POP MART</div>
+        <div class="footer-links">
+            <a href="#">官网</a>
+            <a href="#">门店</a>
+            <a href="#">会员</a>
+            <a href="#">客服</a>
+        </div>
+        <div class="footer-copy">© 2026 POP MART. All Rights Reserved.</div>
+    </footer>
+
+    <!-- 模态框 -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="modal-emoji">🎉</span>
+            <h3 class="modal-title">欢迎加入 POP MART!</h3>
+            <p class="modal-text">
+                感谢你对 Molly 的喜爱！<br>
+                更多精彩潮玩与限量发售<br>
+                即将为你呈现。
+            </p>
+            <button class="modal-btn" onclick="closeModalDirect()">知道了</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== 加载动画 =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // ===== 滚动显示动画 =====
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ===== 数字动画 =====
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.dataset.target);
+                    animateNumber(entry.target, target);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statNumbers.forEach(el => statsObserver.observe(el));
+
+        function animateNumber(element, target) {
+            let current = 0;
+            const increment = target / 40;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + (target === 100 ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 40);
+        }
+
+        // ===== 盲盒互动 =====
+        const blindboxItems = document.querySelectorAll('.blindbox-item');
+        const surprises = [
+            { emoji: '🎨', name: '艺术 Molly', desc: '拿着调色盘的艺术家 Molly！' },
+            { emoji: '👩‍🚀', name: '太空 Molly', desc: '穿着宇航服的探索者 Molly！' },
+            { emoji: '🌸', name: '花童 Molly', desc: '手捧鲜花的春日 Molly！' }
+        ];
+        const openedBoxes = new Set();
+
+        blindboxItems.forEach((box, index) => {
+            box.addEventListener('click', () => {
+                if (openedBoxes.has(index)) return;
+                openedBoxes.add(index);
+
+                // 摇晃动画
+                box.classList.add('shaking');
+
+                setTimeout(() => {
+                    box.classList.remove('shaking');
+                    // 替换内容
+                    const surprise = surprises[index];
+                    box.innerHTML = `
+                        <div class="front" style="background: white; border: 2px solid var(--pink-pale);">
+                            <div class="blindbox-revealed">${surprise.emoji}</div>
+                            <div class="blindbox-name">${surprise.name}</div>
+                        </div>
+                    `;
+                    box.style.background = 'white';
+                    box.style.boxShadow = '0 8px 25px rgba(255,107,157,0.2)';
+
+                    // 如果全部打开，显示提示
+                    if (openedBoxes.size === 3) {
+                        setTimeout(() => {
+                            document.querySelector('.blindbox-hint').textContent = '🎉 你集齐了所有 Molly！';
+                        }, 300);
+                    }
+                }, 1200);
+            });
+        });
+
+        // ===== 模态框 =====
+        function showModal() {
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (event.target === document.getElementById('modal')) {
+                document.getElementById('modal').classList.remove('active');
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // ===== 平滑滚动 =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ===== 导航栏滚动效果 =====
+        let lastScroll = 0;
+        const nav = document.querySelector('.nav');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 100) {
+                nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
